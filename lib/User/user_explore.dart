@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:panorama_viewer/panorama_viewer.dart';
+import 'package:pupsight_app/User/user_dashboard.dart';
+import 'package:pupsight_app/User/moreuser.dart';
+import 'package:pupsight_app/User/user_info.dart';
+import 'package:pupsight_app/User/building_A_explore.dart';
+import 'package:pupsight_app/User/building_B_explore.dart';
+import 'package:pupsight_app/User/cite_explore.dart';
 
 class UserExplore extends StatefulWidget {
   const UserExplore({super.key});
@@ -9,81 +14,172 @@ class UserExplore extends StatefulWidget {
 }
 
 class _UserExploreState extends State<UserExplore> {
-  int currentIndex = 0;
-
-  // List of panorama images
-  final List<String> panoramas = [
-    'assets/panoramas/BuildingA_3rdfloor_01.jpg',
-    'assets/panoramas/BuildingA_3rdfloor_02.jpg',
-    'assets/panoramas/BuildingA_3rdfloor_03.jpg',
-  ];
-
-  void nextPanorama() {
-    setState(() {
-      if (currentIndex < panoramas.length - 1) currentIndex++;
-    });
-  }
-
-  void prevPanorama() {
-    setState(() {
-      if (currentIndex > 0) currentIndex--;
-    });
-  }
+  bool showMainCampus = false; // toggle state
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Panorama viewer with BoxFit.cover
-          PanoramaViewer(
-            child: Image.asset(
-              panoramas[currentIndex],
-              fit: BoxFit.cover, // ensures image fills the view
-            ),
-            sensorControl: SensorControl.orientation, // tilt optional
-          ),
+      // 🔹 AppBar always says "Explore"
+      appBar: AppBar(
+        title: const Text("Explore"),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.yellow,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
 
-          // Back button at top-left
-          Positioned(
-            top: 40,
-            left: 20,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, size: 35, color: Colors.white),
+      // 🔹 Body
+      body: ListView(
+        children: [
+          const SizedBox(height: 20),
+
+          if (!showMainCampus) ...[
+            // Normal view with 2 campuses
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                leading: const Icon(Icons.business),
+                title: const Text("PUP Biñan Main Campus"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  setState(() {
+                    showMainCampus = true;
+                  });
+                },
+              ),
+            ),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                leading: const Icon(Icons.computer),
+                title: const Text("PUP Biñan CITE Campus"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CiteExplore(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ] else ...[
+            // 🔹 Main Campus view
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      setState(() {
+                        showMainCampus = false;
+                      });
+                    },
+                  ),
+                  const Text(
+                    "PUP Biñan Main Campus",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                leading: const Icon(Icons.apartment),
+                title: const Text("Old Building (Building A)"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BuildingAExplore()),
+                  );
+                },
+              ),
+            ),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                leading: const Icon(Icons.business),
+                title: const Text("New Building (Building B)"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BuildingBExplore()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ],
+      ),
+
+      // 🔹 Floating Action Button (Camera)
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: FloatingActionButton(
+          onPressed: () {
+            // TODO: Add camera functionality
+          },
+          shape: const CircleBorder(),
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.camera_alt, color: Colors.white),
+        ),
+      ),
+
+      // 🔹 Bottom Navigation Bar with notch
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.yellow,
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.black),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserDashboard(),
+                  ),
+                );
               },
             ),
-          ),
-
-          // Vertical navigation arrows at bottom center
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_upward,
-                    size: 50,
-                    color: Colors.white,
-                  ),
-                  onPressed: prevPanorama,
-                ),
-                const SizedBox(height: 20),
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_downward,
-                    size: 50,
-                    color: Colors.white,
-                  ),
-                  onPressed: nextPanorama,
-                ),
-                const SizedBox(height: 40),
-              ],
+            IconButton(
+              icon: const Icon(Icons.location_on, color: Colors.black),
+              onPressed: () {
+                if (ModalRoute.of(context)?.settings.name != '/userexplore') {
+                  Navigator.pushReplacementNamed(context, '/userexplore');
+                }
+              },
             ),
-          ),
-        ],
+            const SizedBox(width: 48), // space for FAB
+
+            IconButton(
+              icon: const Icon(Icons.article, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserInfo()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.more_horiz, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserMorePage()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

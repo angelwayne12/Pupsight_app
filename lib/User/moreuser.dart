@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pupsight_app/User/user_info.dart';
 import 'package:pupsight_app/User/user_dashboard.dart';
 import 'package:pupsight_app/User/user_explore.dart';
+import 'package:pupsight_app/User/user_agreement.dart';
+import 'package:pupsight_app/User/user_feedback.dart';
 
 class UserMorePage extends StatefulWidget {
   const UserMorePage({super.key});
@@ -45,7 +47,7 @@ class _UserMorePageState extends State<UserMorePage> {
             _buildNeuButton(
               "User Agreements",
               Icons.assignment,
-              const UserAgreementsPage(),
+              const UserAgreement(),
             ),
             _buildNeuButton("Feedback", Icons.comment, const FeedbackPage()),
             _buildNeuButton("Log Out", Icons.logout, const LogoutPage()),
@@ -88,7 +90,7 @@ class _UserMorePageState extends State<UserMorePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const UserMorePage()),
+                  MaterialPageRoute(builder: (context) => const UserExplore()),
                 );
               },
             ),
@@ -167,20 +169,6 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       Scaffold(appBar: AppBar(title: const Text("Edit Profile")));
-}
-
-class UserAgreementsPage extends StatelessWidget {
-  const UserAgreementsPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      Scaffold(appBar: AppBar(title: const Text("User Agreements")));
-}
-
-class FeedbackPage extends StatelessWidget {
-  const FeedbackPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      Scaffold(appBar: AppBar(title: const Text("Feedback")));
 }
 
 class LogoutPage extends StatelessWidget {
